@@ -25,6 +25,9 @@ serde = { version = "1.0.228", features = ["derive"] }
 toml = "0.8"
 duckdb = { version = "1.10502.0", features = ["bundled"] }
 distrs = "0.2.3"
+# Not used directly; see the equivalent entry in `tests/Cargo.toml`. The benchmark workflows
+# also pass a `--url` with no username, so they need the real whoami backend too.
+whoami = { version = "2.1.2", default-features = false, features = ["std"] }
 
 [dev-dependencies]
 approx = "0.5.1"
@@ -33,3 +36,7 @@ rstest = "0.25.0"
 [lib]
 name = "paradedb"
 path = "src/lib.rs"
+
+[package.metadata.cargo-machete]
+# Declared to force whoami's `std` feature on via unification; never referenced in source.
+ignored = ["whoami"]

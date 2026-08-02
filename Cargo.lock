@@ -893,6 +893,7 @@ dependencies = [
  "sqlx",
  "tokio",
  "toml 0.8.23",
+ "whoami",
 ]
 
 [[package]]
@@ -8138,6 +8139,7 @@ dependencies = [
  "tokenizers",
  "tokio",
  "uuid",
+ "whoami",
 ]
 
 [[package]]

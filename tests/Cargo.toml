@@ -38,6 +38,12 @@ sqlx = { version = "0.9.0", features = [
   "chrono",
 ] }
 strum = { version = "0.27.2", features = ["derive"] }
+# Not used directly. `sqlx-postgres` depends on whoami with `default-features = false`,
+# which on whoami 2.x also drops `std` and silently degrades the backend to the stub that
+# reports every user as "anonymous". When `DATABASE_URL` carries no username -- as in CI
+# and in tests/README.md -- sqlx falls back to that and connects as a role which does not
+# exist. Declaring it here forces `std` back on through feature unification.
+whoami = { version = "2.1.2", default-features = false, features = ["std"] }
 tantivy.workspace = true
 tempfile = "3.27.0"
 time = { version = "0.3.47", features = ["serde"] }
@@ -48,3 +54,7 @@ num-traits = "0.2.19"
 proptest = "1.11.0"
 proptest-derive = "0.6.0"
 env_logger = "0.11.10"
+
+[package.metadata.cargo-machete]
+# Declared to force whoami's `std` feature on via unification; never referenced in source.
+ignored = ["whoami"]
