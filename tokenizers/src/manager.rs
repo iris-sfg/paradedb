@@ -343,7 +343,7 @@ macro_rules! add_filters {
 // Ensure that new variants are added to `from_json_value`. We don't use serde_json to ser/de the
 // SearchTokenizer, because our bincode serialization format is incompatible
 // with the "tagged" format we use in our public API.
-#[derive(Serialize, Clone, Debug, PartialEq, Eq, strum_macros::VariantNames, AsRefStr)]
+#[derive(Serialize, Clone, Debug, PartialEq, Eq, strum::VariantNames, AsRefStr)]
 #[strum(serialize_all = "snake_case")]
 pub enum SearchTokenizer {
     #[strum(serialize = "default")]
@@ -421,7 +421,7 @@ pub enum SearchTokenizer {
     },
 }
 
-#[derive(Default, Serialize, Clone, Debug, PartialEq, Eq, strum_macros::VariantNames, AsRefStr)]
+#[derive(Default, Serialize, Clone, Debug, PartialEq, Eq, strum::VariantNames, AsRefStr)]
 pub enum LinderaLanguage {
     #[default]
     Unspecified,

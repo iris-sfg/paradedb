@@ -19,6 +19,7 @@
 
 #![allow(clippy::tabs_in_doc_comments)]
 
+use once_cell::sync::Lazy;
 use parking_lot::Mutex;
 use pgrx::{IntoDatum, PgList, PgMemoryContexts, direct_function_call, pg_sys};
 
@@ -89,18 +90,19 @@ struct CustomExecMethodsWrapper(*const pg_sys::CustomExecMethods);
 unsafe impl Send for CustomExecMethodsWrapper {}
 unsafe impl Sync for CustomExecMethodsWrapper {}
 
-lazy_static::lazy_static! {
-    // We need to allocate the structs to define functions once, however
-    // all the methods are generic over this trait ([`CustomScan]).  Because Rust
-    // monomorphizes these functions, they're actually at different addresses per CustomScan
-    // impl. As such, we allocate them once, in Postgres "TopMemoryContext", which is **never**
-    // freed. This ensures we don't waste any more memory than we need and more importantly,
-    // ensures the returned pointer holding the function pointers lives for the life of the
-    // process, which Postgres requires of these.
-    static ref PATH_METHODS: Mutex<HashMap<&'static CStr, CustomPathMethodsWrapper>> = Mutex::default();
-    static ref SCAN_METHODS: Mutex<HashMap<&'static CStr, CustomScanMethodsWrapper>> = Mutex::default();
-    static ref EXEC_METHODS: Mutex<HashMap<&'static CStr, CustomExecMethodsWrapper>> = Mutex::default();
-}
+// We need to allocate the structs to define functions once, however
+// all the methods are generic over this trait ([`CustomScan]).  Because Rust
+// monomorphizes these functions, they're actually at different addresses per CustomScan
+// impl. As such, we allocate them once, in Postgres "TopMemoryContext", which is **never**
+// freed. This ensures we don't waste any more memory than we need and more importantly,
+// ensures the returned pointer holding the function pointers lives for the life of the
+// process, which Postgres requires of these.
+static PATH_METHODS: Lazy<Mutex<HashMap<&'static CStr, CustomPathMethodsWrapper>>> =
+    Lazy::new(Mutex::default);
+static SCAN_METHODS: Lazy<Mutex<HashMap<&'static CStr, CustomScanMethodsWrapper>>> =
+    Lazy::new(Mutex::default);
+static EXEC_METHODS: Lazy<Mutex<HashMap<&'static CStr, CustomExecMethodsWrapper>>> =
+    Lazy::new(Mutex::default);
 
 pub trait CustomScan: Default + Sized {
     const NAME: &'static CStr;

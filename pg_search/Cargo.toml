@@ -76,7 +76,6 @@ regex = { version = "1.12.3", default-features = false, features = [
   "unicode",
 ] }
 tantivy-fst = { git = "https://github.com/paradedb/fst.git" }
-lazy_static = "1.5.0"
 macros = { path = "../macros" }
 half = "2.7.1"
 bytemuck = { version = "1.25.0", features = ["derive", "min_const_generics"] }
